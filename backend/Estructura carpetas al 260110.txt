@@ -1,0 +1,39 @@
+src/main/java/com/farmacia/sistema/
+│
+├── 📁 config
+│   ├── CorsConfig.java           (Permisos para conectar con React)
+│   └── DatabaseConfig.java       (Configuración de JdbcTemplate)
+│
+├── 📁 controller
+│   ├── PersonaController.java    (Registro de vecinos)
+│   ├── CatalogoController.java   (Búsqueda de medicamentos)
+│   ├── OperacionesController.java (Registros de recetas y entregas)
+│   └── ReporteController.java    (Estadísticas y alertas)
+│
+├── 📁 service
+│   ├── PersonaService.java       (Lógica de empadronamiento)
+│   ├── InventarioService.java    (Gestión de stock y lotes)
+│   └── DespachoService.java      (Cerebro: valida receta y descuenta stock)
+│
+├── 📁 dto
+│   ├── RecetaRequestDTO.java     (Recibe JSON complejo: Receta + Medicamentos)
+│   ├── StockReportDTO.java       (Medicamento + Cantidad total disponible)
+│   └── PersonaHistoriaDTO.java   (Resumen sanitario del paciente)
+│
+├── 📁 dao
+│   ├── PersonaDAO.java           (SQL: personas y domicilios)
+│   ├── MedicamentoDAO.java       (SQL: catálogo de fármacos)
+│   ├── LoteDAO.java              (SQL: control físico de estantería)
+│   └── FarmaciaOperacionesDAO.java (SQL: Transacciones de recetas y movimientos)
+│
+├── 📁 model
+│   ├── Persona.java
+│   ├── Domicilio.java
+│   ├── Medicamento.java
+│   ├── Lote.java
+│   ├── Receta.java
+│   ├── EntregaDetalle.java
+│   ├── MovimientoStock.java
+│   └── Usuario.java
+│
+└── 📄 SistemaApplication.java    (Clase principal de Spring Boot)
