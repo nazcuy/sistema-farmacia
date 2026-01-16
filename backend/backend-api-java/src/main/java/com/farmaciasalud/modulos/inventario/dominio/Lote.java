@@ -30,6 +30,7 @@ public class Lote {
     @Column(name = "fecha_vencimiento", nullable = false)
     private LocalDate fechaVencimiento;
     
+    
     @Column(name = "cantidad_inicial", nullable = false)
     private Integer cantidadInicial;
     
