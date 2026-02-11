@@ -6,5 +6,5 @@ public enum Rol {
     MEDICO,
     FARMACEUTICO,
     ADMINISTRADOR,
-    PROMOTOR
+    PROMOTOR,
 }

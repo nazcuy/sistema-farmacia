@@ -5,6 +5,7 @@ package com.farmaciasalud.modulos.pacientes.dominio;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import com.farmaciasalud.nucleo.seguridad.Rol;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -63,7 +64,7 @@ public class Usuario {
         return rol == Rol.FARMACEUTICO;
     }
     
-    public boolean esAgente() {
-        return rol == Rol.AGENTE;
+    public boolean esPromotor() {
+        return rol == Rol.PROMOTOR;
     }
 }

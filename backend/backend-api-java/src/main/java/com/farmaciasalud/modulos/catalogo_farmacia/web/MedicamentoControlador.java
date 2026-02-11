@@ -3,7 +3,6 @@ package com.farmaciasalud.modulos.catalogo_farmacia.web;
 /**
  * Nicolás Azcuy - Desarrollador de Software - Linkedin: https://www.linkedin.com/in/nicolas-azcuy-prog/
  */
-
 import com.farmaciasalud.modulos.catalogo_farmacia.dominio.FormaFarmaceutica;
 import com.farmaciasalud.modulos.catalogo_farmacia.dominio.Medicamento;
 import com.farmaciasalud.modulos.catalogo_farmacia.dto.MedicamentoDTO;
@@ -18,8 +17,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/medicamentos")
 @RequiredArgsConstructor
-
-public class MedicamentoServicio {
+public class MedicamentoControlador {
+    
     private final MedicamentoServicio medicamentoServicio;
     
     /**
