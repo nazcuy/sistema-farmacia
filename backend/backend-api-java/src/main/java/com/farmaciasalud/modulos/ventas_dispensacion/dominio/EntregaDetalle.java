@@ -2,6 +2,7 @@ package com.farmaciasalud.modulos.ventas_dispensacion.dominio;
 /**
  * Nicolás Azcuy - Desarrollador de Software - Linkedin: https://www.linkedin.com/in/nicolas-azcuy-prog/
  */
+import com.farmaciasalud.modulos.inventario.dominio.Lote;
 import jakarta.persistence.*;
 import lombok.*;
 

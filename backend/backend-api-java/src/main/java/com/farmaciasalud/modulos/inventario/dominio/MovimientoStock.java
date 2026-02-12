@@ -5,6 +5,7 @@ package com.farmaciasalud.modulos.inventario.dominio;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import com.farmaciasalud.modulos.pacientes.dominio.Usuario;
 
 @Entity
 @Table(name = "movimientos_stock")

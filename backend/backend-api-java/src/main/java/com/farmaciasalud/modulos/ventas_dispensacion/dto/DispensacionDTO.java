@@ -3,6 +3,8 @@ package com.farmaciasalud.modulos.ventas_dispensacion.dto;
 /**
  * Nicolás Azcuy - Desarrollador de Software - Linkedin: https://www.linkedin.com/in/nicolas-azcuy-prog/
  */
+
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,8 @@
 package com.farmaciasalud.modulos.catalogo_farmacia.servicio;
+
 /**
- * Nicolás Azcuy - Desarrollador de Software - Linkedin: https://www.linkedin.com/in/nicolas-azcuy-prog/
+ * Nicolás Azcuy - Desarrollador de Software - Linkedin:
+ * https://www.linkedin.com/in/nicolas-azcuy-prog/
  */
 import com.farmaciasalud.modulos.catalogo_farmacia.dominio.FormaFarmaceutica;
 import com.farmaciasalud.modulos.catalogo_farmacia.dominio.Medicamento;
@@ -18,8 +20,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class MedicamentoServicio {
+
     private final MedicamentoRepositorio medicamentoRepositorio;
-    
+
     /**
      * Lista todos los medicamentos activos ordenados por nombre comercial.
      */
@@ -27,25 +30,33 @@ public class MedicamentoServicio {
     public List<Medicamento> listarTodos() {
         return medicamentoRepositorio.findByActivoTrueOrderByNombreComercialAsc();
     }
-    
+
     /**
-     * Busca un medicamento por su código de barras.
-     * Este es el método principal para buscar en el punto de venta.
+     * Busca un medicamento por su código de barras. Este es el método principal
+     * para buscar en el punto de venta.
      */
     @Transactional(readOnly = true)
     public Optional<Medicamento> buscarPorCodigoBarras(String codigoBarras) {
         return medicamentoRepositorio.findByCodigoBarrasAndActivoTrue(codigoBarras);
     }
-    
+
     /**
-     * Búsqueda general por texto.
-     * Busca en nombre comercial, nombre genérico y código de barras.
+     * Busca un medicamento por su ID.
+     */
+    @Transactional(readOnly = true)
+    public Optional<Medicamento> buscarPorId(Long id) {
+        return medicamentoRepositorio.findById(id);
+    }
+
+    /**
+     * Búsqueda general por texto. Busca en nombre comercial, nombre genérico y
+     * código de barras.
      */
     @Transactional(readOnly = true)
     public List<Medicamento> buscar(String termino) {
         return medicamentoRepositorio.buscarPorTexto(termino);
     }
-    
+
     /**
      * Busca por nombre comercial (búsqueda parcial).
      */
@@ -53,7 +64,7 @@ public class MedicamentoServicio {
     public List<Medicamento> buscarPorNombre(String nombre) {
         return medicamentoRepositorio.findByNombreComercialContainingIgnoreCase(nombre);
     }
-    
+
     /**
      * Filtra medicamentos por forma farmacéutica.
      */
@@ -61,26 +72,26 @@ public class MedicamentoServicio {
     public List<Medicamento> buscarPorForma(FormaFarmaceutica forma) {
         return medicamentoRepositorio.findByFormaFarmaceutica(forma);
     }
-    
+
     /**
-     * Lista medicamentos que no requieren receta.
-     * Útil para mostrar en categoría de venta libre.
+     * Lista medicamentos que no requieren receta. Útil para mostrar en
+     * categoría de venta libre.
      */
     @Transactional(readOnly = true)
     public List<Medicamento> listarVentaLibre() {
         return medicamentoRepositorio.findByRequiereRecetaFalse();
     }
-    
+
     /**
      * Registra un nuevo medicamento en el catálogo.
      */
     public Medicamento registrar(MedicamentoDTO dto) {
         // Validar código de barras único
-        if (dto.getCodigoBarras() != null && 
-            medicamentoRepositorio.existsByCodigoBarras(dto.getCodigoBarras())) {
+        if (dto.getCodigoBarras() != null
+                && medicamentoRepositorio.existsByCodigoBarras(dto.getCodigoBarras())) {
             throw new IllegalArgumentException("Ya existe un medicamento con código de barras: " + dto.getCodigoBarras());
         }
-        
+
         Medicamento medicamento = Medicamento.builder()
                 .codigoBarras(dto.getCodigoBarras())
                 .nombreComercial(dto.getNombreComercial())
@@ -91,18 +102,17 @@ public class MedicamentoServicio {
                 .unidadPresentacion(dto.getUnidadPresentacion())
                 .requiereReceta(dto.getRequiereReceta() != null ? dto.getRequiereReceta() : false)
                 .build();
-        
+
         return medicamentoRepositorio.save(medicamento);
     }
-    
+
     /**
-     * Actualiza un medicamento existente.
-     * Solo campos no nulos se actualizan.
+     * Actualiza un medicamento existente. Solo campos no nulos se actualizan.
      */
     public Medicamento actualizar(Long id, MedicamentoDTO dto) {
         Medicamento medicamento = medicamentoRepositorio.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Medicamento no encontrado con ID: " + id));
-        
+
         // Actualizar campos si vienen en el DTO
         if (dto.getNombreComercial() != null) {
             medicamento.setNombreComercial(dto.getNombreComercial());
@@ -125,36 +135,35 @@ public class MedicamentoServicio {
         if (dto.getRequiereReceta() != null) {
             medicamento.setRequiereReceta(dto.getRequiereReceta());
         }
-        
+
         return medicamentoRepositorio.save(medicamento);
     }
-    
+
     /**
-     * Desactiva un medicamento (soft delete).
-     * No se puede eliminar un medicamento que tiene stock.
+     * Desactiva un medicamento (soft delete). No se puede eliminar un
+     * medicamento que tiene stock.
      */
     public void eliminar(Long id) {
         Medicamento medicamento = medicamentoRepositorio.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Medicamento no encontrado con ID: " + id));
-        
+
         // Verificar que no tenga stock antes de desactivar
         if (medicamento.getStockTotal() > 0) {
             throw new IllegalStateException("No se puede desactivar un medicamento con stock disponible");
         }
-        
+
         medicamento.setActivo(false);
         medicamentoRepositorio.save(medicamento);
     }
-    
+
     /**
-     * Obtiene un medicamento con sus lotes.
-     * Útil para pantalla de inventario.
+     * Obtiene un medicamento con sus lotes. Útil para pantalla de inventario.
      */
     @Transactional(readOnly = true)
     public Optional<Medicamento> buscarConStock(Long id) {
         return medicamentoRepositorio.buscarConLotes(id);
     }
-    
+
     /**
      * Lista todos los laboratorios únicos.
      */
@@ -162,7 +171,7 @@ public class MedicamentoServicio {
     public List<String> listarLaboratorios() {
         return medicamentoRepositorio.listarLaboratorios();
     }
-    
+
     /**
      * Obtiene la cantidad de medicamentos activos.
      */

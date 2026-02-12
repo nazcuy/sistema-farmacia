@@ -2,9 +2,9 @@ package com.farmaciasalud.modulos.ventas_dispensacion.dominio;
 /**
  * Nicolás Azcuy - Desarrollador de Software - Linkedin: https://www.linkedin.com/in/nicolas-azcuy-prog/
  */
+import com.farmaciasalud.modulos.catalogo_farmacia.dominio.Medicamento;
 import jakarta.persistence.*;
 import lombok.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "receta_detalles")
