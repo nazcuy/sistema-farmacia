@@ -2,6 +2,9 @@ package com.farmaciasalud.modulos.historia_clinica.dominio;
 /**
  * Nicolás Azcuy - Desarrollador de Software - Linkedin: https://www.linkedin.com/in/nicolas-azcuy-prog/
  */
+import com.farmaciasalud.modulos.pacientes.dominio.Persona;
+import com.farmaciasalud.modulos.pacientes.dominio.Usuario;
+import com.farmaciasalud.modulos.ventas_dispensacion.dominio.Receta;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;

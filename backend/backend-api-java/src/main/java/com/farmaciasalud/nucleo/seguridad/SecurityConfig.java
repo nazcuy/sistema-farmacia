@@ -57,12 +57,12 @@ public class SecurityConfig {
                 
                 // Endpoints de solo lectura (autenticación requerida)
                 .requestMatchers(HttpMethod.GET, "/api/medicamentos/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/pacientes/**").hasAnyRole("MEDICO", "FARMACEUTICO", "ADMINISTRADOR", "AGENTE")
+                .requestMatchers(HttpMethod.GET, "/api/pacientes/**").hasAnyRole("MEDICO", "FARMACEUTICO", "ADMINISTRADOR", "PROMOTOR")
                 
                 // Endpoints de escritura (solo roles específicos)
-                .requestMatchers("/api/pacientes/**").hasAnyRole("MEDICO", "FARMACEUTICO", "ADMINISTRADOR", "AGENTE")
+                .requestMatchers("/api/pacientes/**").hasAnyRole("MEDICO", "FARMACEUTICO", "ADMINISTRADOR", "PROMOTOR")
                 .requestMatchers("/api/inventario/**").hasAnyRole("FARMACEUTICO", "ADMINISTRADOR")
-                .requestMatchers("/api/dispensaciones/**").hasAnyRole("FARMACEUTICO", "AGENTE")
+                .requestMatchers("/api/dispensaciones/**").hasAnyRole("FARMACEUTICO", "PROMOTOR")
                 .requestMatchers("/api/historias-clinicas/**").hasAnyRole("MEDICO", "ADMINISTRADOR")
                 .requestMatchers("/api/recetas/**").hasAnyRole("MEDICO", "FARMACEUTICO", "ADMINISTRADOR")
                 
