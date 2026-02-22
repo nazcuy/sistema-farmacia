@@ -9,7 +9,7 @@ import com.farmaciasalud.modulos.pacientes.dominio.Persona;
 import com.farmaciasalud.modulos.pacientes.repositorio.PersonaRepositorio;
 import com.farmaciasalud.modulos.pacientes.repositorio.UsuarioRepositorio;
 import com.farmaciasalud.modulos.catalogo_farmacia.repositorio.MedicamentoRepositorio;
-import com.farmaciasalud.modulos.historia_clinica.repositorio.RecetaRepositorio;
+import com.farmaciasalud.modulos.ventas_dispensacion.repositorio.RecetaRepositorio;
 import com.farmaciasalud.modulos.ventas_dispensacion.repositorio.EntregaDetalleRepositorio;
 import com.farmaciasalud.modulos.ventas_dispensacion.repositorio.EntregaRepositorio;
 import com.farmaciasalud.modulos.ventas_dispensacion.repositorio.RecetaDetalleRepositorio;

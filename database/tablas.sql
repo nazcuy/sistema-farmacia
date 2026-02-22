@@ -503,4 +503,5 @@ CREATE TABLE usuarios_farmacia (
     activo BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (persona_id) REFERENCES personas(id)
 );
+DROP TABLE usuarios_farmacia;
 

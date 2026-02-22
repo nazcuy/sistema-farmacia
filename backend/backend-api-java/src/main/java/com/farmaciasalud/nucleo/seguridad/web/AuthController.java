@@ -1,8 +1,12 @@
 package com.farmaciasalud.nucleo.seguridad.web;
 
 /**
- * Nicolás Azcuy - Desarrollador de Software - Linkedin: https://www.linkedin.com/in/nicolas-azcuy-prog/
+ * Nicolás Azcuy - Desarrollador de Software - Linkedin:
+ * https://www.linkedin.com/in/nicolas-azcuy-prog/
  */
+import com.farmaciasalud.modulos.pacientes.dominio.Usuario;
+import com.farmaciasalud.modulos.pacientes.servicio.UsuarioServicio;
+import com.farmaciasalud.nucleo.seguridad.Rol;
 import com.farmaciasalud.nucleo.seguridad.JwtTokenProvider;
 import com.farmaciasalud.nucleo.seguridad.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +25,45 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    
+
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider tokenProvider;
-    
+    private final UsuarioServicio usuarioServicio;
+
     /**
-     * POST /api/auth/login
-     * Autentica al usuario y retorna un token JWT.
+     * POST /api/auth/register Registra un nuevo usuario en el sistema.
+     */
+    @PostMapping("/register")
+    public ResponseEntity<?> registrar(@RequestBody RegistroRequest request) {
+        try {
+            Usuario nuevoUsuario = usuarioServicio.registrar(
+                    request.email(),
+                    request.password(),
+                    request.nombre(),
+                    request.apellido(),
+                    request.rol()
+            );
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    /**
+     * Record para el request de registro.
+     */
+    public record RegistroRequest(
+            String email,
+            String password,
+            String nombre,
+            String apellido,
+            com.farmaciasalud.nucleo.seguridad.Rol rol
+            ) {
+
+    }
+
+    /**
+     * POST /api/auth/login Autentica al usuario y retorna un token JWT.
      */
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
@@ -36,16 +72,16 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.email(), request.password())
             );
-            
+
             // Establece la autenticación en el contexto
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            
+
             // Genera el token JWT
             String token = tokenProvider.generateToken(authentication);
-            
+
             // Obtiene los datos del usuario
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            
+
             // Prepara la respuesta
             Map<String, Object> response = new HashMap<>();
             response.put("token", token);
@@ -53,39 +89,40 @@ public class AuthController {
             response.put("email", userDetails.getEmail());
             response.put("nombre", userDetails.getNombreCompleto());
             response.put("rol", userDetails.getRol().name());
-            
+
             return ResponseEntity.ok(response);
-            
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "Credenciales inválidas"));
         }
     }
-    
+
     /**
-     * GET /api/auth/me
-     * Obtiene los datos del usuario actualmente autenticado.
+     * GET /api/auth/me Obtiene los datos del usuario actualmente autenticado.
      */
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> getCurrentUser(Authentication authentication) {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        
+
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        
+
         Map<String, Object> response = new HashMap<>();
         response.put("id", userDetails.getId());
         response.put("email", userDetails.getEmail());
         response.put("nombre", userDetails.getNombre());
         response.put("apellido", userDetails.getApellido());
         response.put("rol", userDetails.getRol().name());
-        
+
         return ResponseEntity.ok(response);
     }
-    
+
     /**
      * Record para el request de login.
      */
-    public record LoginRequest(String email, String password) {}
+    public record LoginRequest(String email, String password) {
+
+    }
 }

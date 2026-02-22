@@ -38,6 +38,6 @@ public interface RecetaRepositorio extends JpaRepository<Receta, Long> {
     @Query("SELECT COUNT(r) FROM Receta r WHERE r.medico.id = :medicoId AND r.fechaEmision >= :fecha")
     long contarRecetasMedico(@Param("medicoId") Long medicoId, @Param("fecha") LocalDateTime fecha);
     
-    @Query("SELECT r FROM Receta r WHERE r.recetaOriginal.id IS NOT NULL")
-    List<Receta> buscarRenovaciones();
+    //@Query("SELECT r FROM Receta r WHERE r.recetaOriginal.id IS NOT NULL")
+    //List<Receta> buscarRenovaciones();
 }
