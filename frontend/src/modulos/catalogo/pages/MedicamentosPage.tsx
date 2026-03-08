@@ -3,7 +3,7 @@ import { Table, Button, Space, Modal, Form, Input, Select, InputNumber, Switch, 
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import { medicamentosApi, Medicamento } from '../../../servicios/api'
 
-const { Option } = Select
+const Option = Select.Option;
 
 const MedicamentosPage: React.FC = () => {
   const [data, setData] = useState<Medicamento[]>([])
@@ -54,26 +54,48 @@ const MedicamentosPage: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     try {
+      const payload = {
+        codigoBarras: values.codigoBarras || null,
+        nombreComercial: values.nombreComercial,
+        nombreGenerico: values.nombreGenerico || null,
+        laboratorio: values.laboratorio || null,
+        formaFarmaceutica: values.formaFarmaceutica,
+        concentracion: values.concentracion,
+        unidadPresentacion: values.unidadPresentacion,
+        requiereReceta: values.requiereReceta ?? false,
+      };
+
+      console.log('Payload a enviar:', payload);
+
       if (editingRecord) {
-        await medicamentosApi.update(editingRecord.id, values)
-        message.success('Medicamento actualizado')
+        await medicamentosApi.update(editingRecord.id, payload);
+        message.success('Medicamento actualizado');
       } else {
-        await medicamentosApi.create(values)
-        message.success('Medicamento registrado')
+        await medicamentosApi.create(payload);
+        message.success('Medicamento registrado');
       }
-      setModalVisible(false)
-      form.resetFields()
-      fetchData()
-    } catch (error) {
-      message.error('Error al guardar medicamento')
+      setModalVisible(false);
+      form.resetFields();
+      fetchData();
+    } catch (error: any) {
+      console.error('Error al guardar:', error);
+      if (error.response) {
+        console.error('Respuesta del servidor:', error.response.data);
+        message.error(`Error: ${error.response.data.message || 'Error al guardar'}`);
+      } else {
+        message.error('Error al guardar medicamento');
+      }
     }
-  }
+  };
 
   console.log('data en render:', data);
-  const filteredData = data.filter(item =>
-    (item.nombreComercial || '').toLowerCase().includes(searchText.toLowerCase()) ||
-    (item.nombreGenerico || '').toLowerCase().includes(searchText.toLowerCase())
-  )
+  const filteredData = data.filter(item => {
+    const searchLower = searchText.toLowerCase()
+    return (
+      (item as any)?.nombreComercial?.toLowerCase().includes(searchLower) ||
+      (item as any)?.nombreGenerico?.toLowerCase().includes(searchLower)
+    )
+  })
 
   const columns = [
     {
@@ -240,13 +262,13 @@ const MedicamentosPage: React.FC = () => {
               >
                 <Select>
                   <Option value="COMPRIMIDO">Comprimido</Option>
-                  <Option value="CÁPSULA">Cápsula</Option>
+                  <Option value="CAPSULA">Cápsula</Option>
                   <Option value="JARABE">Jarabe</Option>
-                  <Option value="INYECCIÓN">Inyección</Option>
+                  <Option value="INYECTABLE">Inyección</Option>
                   <Option value="GOTAS">Gotas</Option>
                   <Option value="CREMA">Crema</Option>
-                  <Option value="POMADA">Pomada</Option>
-                  <Option value="SUSPENSIÓN">Suspensión</Option>
+                  <Option value="PARCHE">Parche</Option>
+                  <Option value="OTRO">Suspensión</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -266,12 +288,11 @@ const MedicamentosPage: React.FC = () => {
                 rules={[{ required: true, message: 'Seleccione' }]}
               >
                 <Select>
-                  <Option value="COMPRIMIDOS">Comprimidos</Option>
-                  <Option value="CÁPSULAS">Cápsulas</Option>
-                  <Option value="ML">ml</Option>
-                  <Option value="G">g</Option>
-                  <Option value="AMPOLLAS">Ampollas</Option>
-                  <Option value="TUBOS">Tubos</Option>
+                  <Option value="BLISTER">Blister</Option>
+                  <Option value="FRASCO">Frasco</Option>
+                  <Option value="TUBO">Tubo</Option>
+                  <Option value="UNIDAD">Unidad</Option>
+                  <Option value="SOBRES">Sobres</Option>
                 </Select>
               </Form.Item>
             </Col>
