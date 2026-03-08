@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Form, Input, Button, Card, message, Typography } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../contextos/AuthContext";
-import type { AuthUser } from "../../../contextos/AuthContext";
-import { authApi } from "../../../servicios/api";
+import { useAuth } from "../../contextos/AuthContext";
+import type { AuthUser } from "../../contextos/AuthContext";
+import { authApi } from "../../servicios/api";
 
 const { Title } = Typography;
 

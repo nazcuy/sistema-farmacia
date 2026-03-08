@@ -89,6 +89,7 @@ const DashboardPage: React.FC = () => {
               <li>Receta dispensada: Maria García</li>
               <li>Ingreso de lote: Amoxicilina 500mg</li>
               <li>Ajuste de stock: Ibuprofeno 400mg</li>
+              <li>SÓLO A MODO DE EJEMPLO. AÚN NO ACTUALIZA</li>
             </ul>
           </Card>
         </Col>
