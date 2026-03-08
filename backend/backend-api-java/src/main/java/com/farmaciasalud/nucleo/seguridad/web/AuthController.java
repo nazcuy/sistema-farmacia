@@ -65,6 +65,7 @@ public class AuthController {
     /**
      * POST /api/auth/login Autentica al usuario y retorna un token JWT.
      */
+    //@CrossOrigin(origins = "http://localhost:5174")
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
         try {

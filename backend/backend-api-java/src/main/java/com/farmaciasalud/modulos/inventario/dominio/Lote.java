@@ -5,6 +5,7 @@ package com.farmaciasalud.modulos.inventario.dominio;
  * https://www.linkedin.com/in/nicolas-azcuy-prog/
  */
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class Lote {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "medicamento_id", nullable = false)
+    @JsonIgnore
     private Medicamento medicamento;
 
     @Column(name = "numero_lote", nullable = false, length = 50)

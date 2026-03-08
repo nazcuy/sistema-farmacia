@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import com.farmaciasalud.modulos.inventario.dominio.Lote;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "medicamentos")
@@ -51,6 +52,7 @@ public class Medicamento {
     
     @OneToMany(mappedBy = "medicamento", cascade = CascadeType.ALL)
     @Builder.Default
+    @JsonIgnore
     private List<Lote> lotes = new ArrayList<>();
     
     @Column(name = "precio_venta", precision = 10, scale = 2)
