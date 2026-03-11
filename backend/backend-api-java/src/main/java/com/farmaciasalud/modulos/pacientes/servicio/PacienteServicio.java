@@ -1,7 +1,11 @@
 package com.farmaciasalud.modulos.pacientes.servicio;
+
 /**
- * Nicolás Azcuy - Desarrollador de Software - Linkedin: https://www.linkedin.com/in/nicolas-azcuy-prog/
+ * Nicolás Azcuy - Desarrollador de Software - Linkedin:
+ * https://www.linkedin.com/in/nicolas-azcuy-prog/
  */
+import com.farmaciasalud.modulos.pacientes.dominio.Domicilio;
+import com.farmaciasalud.modulos.pacientes.dominio.TipoDomicilio;
 import com.farmaciasalud.modulos.pacientes.dominio.Persona;
 import com.farmaciasalud.modulos.pacientes.dto.PersonaRegistroDTO;
 import com.farmaciasalud.modulos.pacientes.dto.PersonaActualizacionDTO;
@@ -17,64 +21,65 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional
 public class PacienteServicio {
+
     private final PersonaRepositorio personaRepositorio;
-    
+
     /**
-     * Lista todas las personas activas en el sistema.
-     * Se usa para mostrar grids de búsqueda en el frontend.
+     * Lista todas las personas activas en el sistema. Se usa para mostrar grids
+     * de búsqueda en el frontend.
      */
     @Transactional(readOnly = true)
     public List<Persona> listarTodos() {
         return personaRepositorio.findByActivoTrue();
     }
-    
+
     /**
-     * Busca una persona por su ID.
-     * Retorna Optional para manejar elegantemente el caso de no encontrado.
+     * Busca una persona por su ID. Retorna Optional para manejar elegantemente
+     * el caso de no encontrado.
      */
     @Transactional(readOnly = true)
     public Optional<Persona> buscarPorId(Long id) {
         return personaRepositorio.findById(id);
     }
-    
+
     /**
-     * Busca una persona por su número de documento (DNI, etc.).
-     * Este es el método más usado para identificar pacientes en mostrador.
+     * Busca una persona por su número de documento (DNI, etc.). Este es el
+     * método más usado para identificar pacientes en mostrador.
      */
     @Transactional(readOnly = true)
     public Optional<Persona> buscarPorDocumento(String numeroDocumento) {
         return personaRepositorio.findByNumeroDocumento(numeroDocumento);
     }
-    
+
     /**
-     * Busca personas por apellido (búsqueda parcial).
-     * Útil para cuando el usuario no recuerda el documento exacto.
+     * Busca personas por apellido (búsqueda parcial). Útil para cuando el
+     * usuario no recuerda el documento exacto.
      */
     @Transactional(readOnly = true)
     public List<Persona> buscarPorApellido(String apellido) {
         return personaRepositorio.findByApellidoContainingIgnoreCase(apellido);
     }
-    
+
     /**
-     * Busca personas por nombre o apellido.
-     * Búsqueda general para el campo de búsqueda rápida.
+     * Busca personas por nombre o apellido. Búsqueda general para el campo de
+     * búsqueda rápida.
      */
     @Transactional(readOnly = true)
     public List<Persona> buscarPorNombreOApellido(String termino) {
         return personaRepositorio.buscarPorNombreOApellido(termino, termino);
     }
-    
+
     /**
-     * Registra una nueva persona en el sistema.
-     * Valida que no exista otra persona con el mismo documento.
+     * Registra una nueva persona en el sistema. Valida que no exista otra
+     * persona con el mismo documento.
      */
     public Persona registrar(PersonaRegistroDTO dto) {
         // Validación: verificar que no exista duplicado por documento
         if (personaRepositorio.existsByNumeroDocumento(dto.getNumeroDocumento())) {
             throw new IllegalArgumentException("Ya existe una persona registrada con el documento: " + dto.getNumeroDocumento());
         }
-        
-        // Conversión de DTO a entidad
+
+        // 1. Construcción de la Persona
         Persona persona = Persona.builder()
                 .numeroDocumento(dto.getNumeroDocumento())
                 .tipoDocumento(dto.getTipoDocumento())
@@ -85,18 +90,37 @@ public class PacienteServicio {
                 .telefono(dto.getTelefono())
                 .email(dto.getEmail())
                 .build();
-        
+
+        // 2. Construcción del Domicilio con los nuevos campos detallados
+        Domicilio domicilio = Domicilio.builder()
+                .calle(dto.getCalle())
+                .numero(dto.getNumero())
+                .piso(dto.getPiso())
+                .depto(dto.getDepto())
+                .manzana(dto.getManzana())
+                .cuadricula(dto.getCuadricula())
+                .barrio(dto.getBarrio())
+                .localidad(dto.getLocalidad())
+                .provincia(dto.getProvincia())
+                .codigoPostal(dto.getCodigoPostal())
+                .tipo(dto.getTipoDomicilio() != null ? dto.getTipoDomicilio() : TipoDomicilio.CASA)
+                .build();
+
+        // 3. Vincular ambos (usando el método helper que ya tienes en Persona.java)
+        persona.agregarDomicilio(domicilio);
+
+        // Al guardar la persona, por el CascadeType.ALL, se guardará también el domicilio
         return personaRepositorio.save(persona);
     }
-    
+
     /**
-     * Actualiza los datos de una persona existente.
-     * Solo actualiza campos permitidos (no el documento que es identificador).
+     * Actualiza los datos de una persona existente. Solo actualiza campos
+     * permitidos (no el documento que es identificador).
      */
     public Persona actualizar(Long id, PersonaActualizacionDTO dto) {
         Persona persona = personaRepositorio.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Persona no encontrada con ID: " + id));
-        
+
         // Actualizar solo los campos que vienen en el DTO
         if (dto.getNombre() != null) {
             persona.setNombre(dto.getNombre());
@@ -116,34 +140,34 @@ public class PacienteServicio {
         if (dto.getEmail() != null) {
             persona.setEmail(dto.getEmail());
         }
-        
+
         return personaRepositorio.save(persona);
     }
-    
+
     /**
-     * Desactiva una persona (soft delete).
-     * No la eliminamos físicamente para mantener historial y trazabilidad.
+     * Desactiva una persona (soft delete). No la eliminamos físicamente para
+     * mantener historial y trazabilidad.
      */
     public void eliminar(Long id) {
         Persona persona = personaRepositorio.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Persona no encontrada con ID: " + id));
-        
+
         persona.setActivo(false);
         personaRepositorio.save(persona);
     }
-    
+
     /**
-     * Obtiene una persona con sus domicilios cargados.
-     * Útil para pantallas de edición o visualización completa.
+     * Obtiene una persona con sus domicilios cargados. Útil para pantallas de
+     * edición o visualización completa.
      */
     @Transactional(readOnly = true)
     public Optional<Persona> buscarConDomicilios(Long id) {
         return personaRepositorio.buscarConDomicilios(id);
     }
-    
+
     /**
-     * Obtiene la cantidad total de personas activas.
-     * Útil para reportes y estadísticas.
+     * Obtiene la cantidad total de personas activas. Útil para reportes y
+     * estadísticas.
      */
     @Transactional(readOnly = true)
     public long contarPersonas() {

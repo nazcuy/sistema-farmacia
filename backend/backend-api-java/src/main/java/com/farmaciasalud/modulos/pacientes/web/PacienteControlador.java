@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -80,7 +81,7 @@ public class PacienteControlador {
      * Registra una nueva persona en el sistema.
      */
     @PostMapping
-    public ResponseEntity<Persona> registrar(@RequestBody PersonaRegistroDTO dto) {
+    public ResponseEntity<Persona> registrar(@Valid @RequestBody PersonaRegistroDTO dto) {
         try {
             Persona persona = pacienteServicio.registrar(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(persona);
@@ -95,7 +96,7 @@ public class PacienteControlador {
      * Actualiza los datos de una persona existente.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Persona> actualizar(@PathVariable Long id, 
+    public ResponseEntity<Persona> actualizar(@Valid @PathVariable Long id, 
                                               @RequestBody PersonaActualizacionDTO dto) {
         try {
             Persona persona = pacienteServicio.actualizar(id, dto);

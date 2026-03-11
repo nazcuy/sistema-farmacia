@@ -24,22 +24,37 @@ public class Domicilio {
     private Persona persona;
 
     @Column(nullable = false, length = 255)
-    private String direccion;
+    private String calle;
+
+    @Column(nullable = false, length = 10)
+    private String numero;
+
+    @Column(length = 10)
+    private String piso;
+
+    @Column(length = 10)
+    private String depto;
+
+    @Column(length = 50)
+    private String manzana;
+
+    @Column(length = 50)
+    private String cuadricula;
 
     @Column(length = 100)
     private String barrio;
 
-    @Column(length = 100)
+    @Column(nullable = false, length = 100)
     private String localidad;
 
-    @Column(length = 100)
+    @Column(nullable = false, length = 100)
     private String provincia;
 
-    @Column(name = "codigo_postal", length = 10)
+    @Column(name = "codigo_postal", nullable = false, length = 10)
     private String codigoPostal;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(length = 50)
     @Builder.Default
     private TipoDomicilio tipo = TipoDomicilio.CASA;
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Table, Button, Space, Modal, Form, Input, Select, DatePicker, message, Popconfirm, Card, Row, Col } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import { pacientesApi, Persona } from '../../../servicios/api'
-
+import dayjs from 'dayjs';
 const { Option } = Select
 
 const PacientesPage: React.FC = () => {
@@ -38,7 +38,7 @@ const PacientesPage: React.FC = () => {
     setEditingRecord(record)
     form.setFieldsValue({
       ...record,
-      fechaNacimiento: record.fechaNacimiento ? new Date(record.fechaNacimiento) : null,
+      fechaNacimiento: record.fechaNacimiento ? dayjs(record.fechaNacimiento) : null,
     })
     setModalVisible(true)
   }
@@ -55,11 +55,16 @@ const PacientesPage: React.FC = () => {
 
   const handleSubmit = async (values: any) => {
     try {
+      const payload = {
+        ...values,
+        fechaNacimiento: values.fechaNacimiento ? values.fechaNacimiento.format('YYYY-MM-DD') : null,
+      };
       if (editingRecord) {
-        await pacientesApi.update(editingRecord.id, values)
+        const { numeroDocumento, tipoDocumento, ...updatePayload } = payload;
+        await pacientesApi.update(editingRecord.id, updatePayload)
         message.success('Paciente actualizado')
       } else {
-        await pacientesApi.create(values)
+        await pacientesApi.create(payload)
         message.success('Paciente registrado')
       }
       setModalVisible(false)
@@ -190,7 +195,8 @@ const PacientesPage: React.FC = () => {
               >
                 <Select>
                   <Option value="DNI">DNI</Option>
-                  <Option value="CI">Cédula de Identidad</Option>
+                  <Option value="LE">Libreta de Enrolamiento</Option>
+                  <Option value="LC">Libreta Cívica</Option>
                   <Option value="PASAPORTE">Pasaporte</Option>
                 </Select>
               </Form.Item>
@@ -199,7 +205,7 @@ const PacientesPage: React.FC = () => {
               <Form.Item
                 name="numeroDocumento"
                 label="Número Documento"
-                rules={[{ required: true, message: 'Ingrese el número' }]}
+                rules={[{ required: true, message: 'Ingrese el número sin puntos ni comas' }]}
               >
                 <Input />
               </Form.Item>
@@ -221,8 +227,9 @@ const PacientesPage: React.FC = () => {
                 label="Sexo"
               >
                 <Select>
-                  <Option value="MASCULINO">Masculino</Option>
-                  <Option value="FEMENINO">Femenino</Option>
+                  <Option value="M">Masculino</Option>
+                  <Option value="F">Femenino</Option>
+                  <Option value="O">Otro</Option>
                 </Select>
               </Form.Item>
             </Col>
