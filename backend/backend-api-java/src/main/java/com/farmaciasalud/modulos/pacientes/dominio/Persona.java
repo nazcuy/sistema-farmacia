@@ -15,6 +15,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder 
 public class Persona {
+
+    public static Object builder() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

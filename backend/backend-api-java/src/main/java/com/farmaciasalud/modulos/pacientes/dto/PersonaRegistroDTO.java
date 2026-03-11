@@ -84,4 +84,8 @@ public class PersonaRegistroDTO {
     private String codigoPostal;
 
     private TipoDomicilio tipoDomicilio;
+
+    public String getNumeroDocumento() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
