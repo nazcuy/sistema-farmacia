@@ -10,6 +10,7 @@ const PacientesPage: React.FC = () => {
   const [loading, setLoading] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [editingRecord, setEditingRecord] = useState<Persona | null>(null)
+  const [showHistoriaClinica, setShowHistoriaClinica] = useState(false)
   const [form] = Form.useForm()
 
   const fetchData = async () => {
@@ -30,12 +31,14 @@ const PacientesPage: React.FC = () => {
 
   const handleAdd = () => {
     setEditingRecord(null)
+    setShowHistoriaClinica(false)
     form.resetFields()
     setModalVisible(true)
   }
 
   const handleEdit = (record: Persona) => {
     setEditingRecord(record)
+    setShowHistoriaClinica(false)
     // Obtener el primer domicilio activo (si existe)
     const domicilio = record.domicilios?.find(d => d.activo) || {} as any
     form.setFieldsValue({
@@ -74,6 +77,16 @@ const PacientesPage: React.FC = () => {
         ...values,
         fechaNacimiento: values.fechaNacimiento ? values.fechaNacimiento.format('YYYY-MM-DD') : null,
         sexo: values.sexo === 'MASCULINO' ? 'M' : values.sexo === 'FEMENINO' ? 'F' : 'OTRO',
+      }
+      if (showHistoriaClinica) {
+        payload.historiaClinica = {
+          medicoId: values.medicoId,
+          fechaConsulta: values.fechaConsulta ? values.fechaConsulta.format('YYYY-MM-DDTHH:mm:ss') : dayjs().format('YYYY-MM-DDTHH:mm:ss'),
+          motivoConsulta: values.motivoConsulta,
+          diagnostico: values.diagnostico,
+          observaciones: values.observaciones,
+          recetas: values.recetas || []
+        }
       }
       if (editingRecord) {
         await pacientesApi.update(editingRecord.id, payload)
@@ -300,8 +313,148 @@ const PacientesPage: React.FC = () => {
             </Col>
           </Row>
 
+          {showHistoriaClinica && (
+            <>
+              <Divider orientation="left">Historia Clínica</Divider>
+
+              <Row gutter={16}>
+                <Col span={12}>
+                  <Form.Item
+                    name="medicoId"
+                    label="Médico (ID)"
+                    rules={[{ required: true, message: 'Ingrese el ID del médico' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="fechaConsulta"
+                    label="Fecha Consulta"
+                    initialValue={dayjs()}
+                  >
+                    <DatePicker showTime style={{ width: '100%' }} />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Form.Item
+                name="motivoConsulta"
+                label="Motivo Consulta"
+              >
+                <Input.TextArea rows={3} />
+              </Form.Item>
+
+              <Form.Item
+                name="diagnostico"
+                label="Diagnóstico"
+              >
+                <Input.TextArea rows={3} />
+              </Form.Item>
+
+              <Form.Item
+                name="observaciones"
+                label="Observaciones"
+              >
+                <Input.TextArea rows={3} />
+              </Form.Item>
+
+              <Divider orientation="left">Recetas</Divider>
+
+              <Form.List name="recetas">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map(({ key, name, ...restField }) => (
+                      <div key={key} style={{ marginBottom: 16, border: '1px solid #d9d9d9', padding: 16, borderRadius: 4 }}>
+                        <Row gutter={16}>
+                          <Col span={12}>
+                            <Form.Item
+                              {...restField}
+                              name={[name, 'vigenciaDias']}
+                              label="Vigencia (días)"
+                              initialValue={30}
+                            >
+                              <Input type="number" />
+                            </Form.Item>
+                          </Col>
+                          <Col span={12}>
+                            <Form.Item
+                              {...restField}
+                              name={[name, 'observaciones']}
+                              label="Observaciones"
+                            >
+                              <Input />
+                            </Form.Item>
+                          </Col>
+                        </Row>
+
+                        <Form.List name={[name, 'detalles']}>
+                          {(detalleFields, { add: addDetalle, remove: removeDetalle }) => (
+                            <>
+                              {detalleFields.map(({ key: dKey, name: dName, ...dRest }) => (
+                                <Row key={dKey} gutter={16} align="middle">
+                                  <Col span={8}>
+                                    <Form.Item
+                                      {...dRest}
+                                      name={[dName, 'medicamentoId']}
+                                      label="Medicamento ID"
+                                      rules={[{ required: true, message: 'Ingrese ID del medicamento' }]}
+                                    >
+                                      <Input />
+                                    </Form.Item>
+                                  </Col>
+                                  <Col span={4}>
+                                    <Form.Item
+                                      {...dRest}
+                                      name={[dName, 'cantidad']}
+                                      label="Cantidad"
+                                      rules={[{ required: true, message: 'Ingrese cantidad' }]}
+                                    >
+                                      <Input type="number" />
+                                    </Form.Item>
+                                  </Col>
+                                  <Col span={8}>
+                                    <Form.Item
+                                      {...dRest}
+                                      name={[dName, 'dosificacion']}
+                                      label="Dosificación"
+                                    >
+                                      <Input />
+                                    </Form.Item>
+                                  </Col>
+                                  <Col span={4}>
+                                    <Button danger onClick={() => removeDetalle(dName)}>
+                                      Eliminar
+                                    </Button>
+                                  </Col>
+                                </Row>
+                              ))}
+                              <Button type="dashed" onClick={() => addDetalle()} block style={{ marginBottom: 8 }}>
+                                Agregar Detalle
+                              </Button>
+                            </>
+                          )}
+                        </Form.List>
+
+                        <Button danger onClick={() => remove(name)} style={{ marginTop: 8 }}>
+                          Eliminar Receta
+                        </Button>
+                      </div>
+                    ))}
+                    <Button type="dashed" onClick={() => add()} block>
+                      Agregar Receta
+                    </Button>
+                  </>
+                )}
+              </Form.List>
+            </>
+          )}
+
           <Form.Item style={{ textAlign: 'right' }}>
             <Space>
+              <Button danger onClick={() => setShowHistoriaClinica(true)} disabled={showHistoriaClinica}>
+                Cargar Historia Clínica
+              </Button>
               <Button onClick={() => setModalVisible(false)}>Cancelar</Button>
               <Button type="primary" htmlType="submit">
                 {editingRecord ? 'Actualizar' : 'Guardar'}

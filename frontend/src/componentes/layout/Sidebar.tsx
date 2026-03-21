@@ -44,29 +44,19 @@ const Sidebar: React.FC = () => {
       label: 'Inventario',
     },
     {
-      key: '/historia-clinica',
-      icon: <FileTextOutlined />,
-      label: 'Historia Clínica',
-    },
-    {
       key: '/recetas',
       icon: <FileTextOutlined />,
       label: 'Recetas',
     },
     {
-      key: '/dispensacion',
+      key: '/historia-clinica',
       icon: <HistoryOutlined />,
-      label: 'Dispensación',
+      label: 'Historia Clínica',
     },
     {
       key: '/administracion',
       icon: <TeamOutlined />,
       label: 'Administración',
-    },
-    {
-      key: '/configuracion',
-      icon: <SettingOutlined />,
-      label: 'Configuración',
     },
   ]
 
