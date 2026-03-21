@@ -14,8 +14,8 @@ const { Title } = Typography
 const DashboardPage: React.FC = () => {
   return (
     <div>
-      <Title level={2}>Dashboard</Title>
-      <Title level={5} type="secondary">Resumen del Sistema de Farmacia</Title>
+      <Title level={2}>Estado de Situación</Title>
+      <Title level={5} type="secondary">Datos relevantes de la situación sanitaria</Title>
 
       <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
         <Col xs={24} sm={12} lg={6}>

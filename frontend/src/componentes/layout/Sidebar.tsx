@@ -26,7 +26,7 @@ const Sidebar: React.FC = () => {
     {
       key: '/dashboard',
       icon: <DashboardOutlined />,
-      label: 'Dashboard',
+      label: 'Estado de Situación',
     },
     {
       key: '/pacientes',

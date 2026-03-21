@@ -47,11 +47,18 @@ const LoginPage: React.FC = () => {
       <Card
         style={{ width: 400, boxShadow: '0 8px 24px rgba(0,0,0,0.15)', borderRadius: 12 }}
       >
+        <div style={{ textAlign: 'center' }}>
+          <img
+            src="../../../../dist/assets/logo_inicio.png"
+            alt="Logo Farmacia"
+            style={{ width: 250, marginBottom: 12, display: 'block', margin: '0 auto 0px' }}
+          />
+        </div>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <Title level={2} style={{ marginBottom: 8, color: '#1890ff' }}>
-            Farmacia Salud
+          <Title level={2} style={{ fontSize: 35, marginBottom: 15, color: '#407FB5' }}>
+            Sistema Integral de Salud Cooperativa
           </Title>
-          <Text type="secondary">Sistema de Gestión Farmacéutica</Text>
+          <Text type="secondary">¡Al gran pueblo argentino, salud!</Text>
         </div>
 
         <Form
@@ -86,12 +93,6 @@ const LoginPage: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
-
-        <div style={{ textAlign: 'center', marginTop: 16 }}>
-          <Text type="secondary">Credenciales de demo:</Text>
-          <br />
-          <Text code>admin / admin123</Text>
-        </div>
       </Card>
     </div>
   )

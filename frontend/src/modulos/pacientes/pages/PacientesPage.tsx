@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Space, Modal, Form, Input, Select, DatePicker, message, Popconfirm, Card, Row, Col } from 'antd'
+import { Table, Button, Space, Modal, Form, Input, Select, DatePicker, message, Popconfirm, Card, Row, Col, Divider } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import { pacientesApi, Persona } from '../../../servicios/api'
 import dayjs from 'dayjs';
@@ -36,9 +36,24 @@ const PacientesPage: React.FC = () => {
 
   const handleEdit = (record: Persona) => {
     setEditingRecord(record)
+    // Obtener el primer domicilio activo (si existe)
+    const domicilio = record.domicilios?.find(d => d.activo) || {} as any
     form.setFieldsValue({
       ...record,
       fechaNacimiento: record.fechaNacimiento ? dayjs(record.fechaNacimiento) : null,
+      sexo: record.sexo === 'M' ? 'MASCULINO' : record.sexo === 'F' ? 'FEMENINO' : 'OTRO',
+      // Campos de domicilio
+      calle: domicilio.calle,
+      numero: domicilio.numero,
+      piso: domicilio.piso,
+      depto: domicilio.depto,
+      manzana: domicilio.manzana,
+      cuadricula: domicilio.cuadricula,
+      barrio: domicilio.barrio,
+      localidad: domicilio.localidad,
+      provincia: domicilio.provincia,
+      codigoPostal: domicilio.codigoPostal,
+      tipoDomicilio: domicilio.tipo,
     })
     setModalVisible(true)
   }
@@ -58,10 +73,10 @@ const PacientesPage: React.FC = () => {
       const payload = {
         ...values,
         fechaNacimiento: values.fechaNacimiento ? values.fechaNacimiento.format('YYYY-MM-DD') : null,
-      };
+        sexo: values.sexo === 'MASCULINO' ? 'M' : values.sexo === 'FEMENINO' ? 'F' : 'OTRO',
+      }
       if (editingRecord) {
-        const { numeroDocumento, tipoDocumento, ...updatePayload } = payload;
-        await pacientesApi.update(editingRecord.id, updatePayload)
+        await pacientesApi.update(editingRecord.id, payload)
         message.success('Paciente actualizado')
       } else {
         await pacientesApi.create(payload)
@@ -70,59 +85,26 @@ const PacientesPage: React.FC = () => {
       setModalVisible(false)
       form.resetFields()
       fetchData()
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error al guardar:', error)
       message.error('Error al guardar paciente')
     }
   }
 
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 60,
-    },
-    {
-      title: 'Nombre',
-      dataIndex: 'nombre',
-      key: 'nombre',
-    },
-    {
-      title: 'Apellido',
-      dataIndex: 'apellido',
-      key: 'apellido',
-    },
-    {
-      title: 'Tipo Documento',
-      dataIndex: 'tipoDocumento',
-      key: 'tipoDocumento',
-    },
-    {
-      title: 'Número Documento',
-      dataIndex: 'numeroDocumento',
-      key: 'numeroDocumento',
-    },
-    {
-      title: 'Teléfono',
-      dataIndex: 'telefono',
-      key: 'telefono',
-    },
+    { title: 'ID', dataIndex: 'id', key: 'id', width: 60 },
+    { title: 'Nombre', dataIndex: 'nombre', key: 'nombre' },
+    { title: 'Apellido', dataIndex: 'apellido', key: 'apellido' },
+    { title: 'Tipo Doc.', dataIndex: 'tipoDocumento', key: 'tipoDocumento' },
+    { title: 'Número Doc.', dataIndex: 'numeroDocumento', key: 'numeroDocumento' },
+    { title: 'Teléfono', dataIndex: 'telefono', key: 'telefono' },
     {
       title: 'Acciones',
       key: 'acciones',
       render: (_: any, record: Persona) => (
         <Space>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-          />
-          <Popconfirm
-            title="¿Está seguro de eliminar este paciente?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Sí"
-            cancelText="No"
-          >
+          <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+          <Popconfirm title="¿Eliminar?" onConfirm={() => handleDelete(record.id)} okText="Sí" cancelText="No">
             <Button type="link" danger icon={<DeleteOutlined />} />
           </Popconfirm>
         </Space>
@@ -248,11 +230,77 @@ const PacientesPage: React.FC = () => {
             </Col>
           </Row>
 
-          <Form.Item name="direccion" label="Dirección">
-            <Input.TextArea rows={2} />
-          </Form.Item>
+          <Divider orientation="left">Domicilio</Divider>
 
-          <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item name="calle" label="Calle" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={4}>
+              <Form.Item name="numero" label="Número" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={4}>
+              <Form.Item name="piso" label="Piso">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={4}>
+              <Form.Item name="depto" label="Depto">
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={6}>
+              <Form.Item name="manzana" label="Manzana">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="cuadricula" label="Cuadrícula">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="barrio" label="Barrio">
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={6}>
+              <Form.Item name="tipoDomicilio" label="Tipo" initialValue="CASA">
+                <Select>
+                  <Option value="CASA">Casa</Option>
+                  <Option value="TRABAJO">Trabajo</Option>
+                  <Option value="OTRO">Otro</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item name="localidad" label="Localidad" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="provincia" label="Provincia" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item name="codigoPostal" label="Código Postal" rules={[{ required: true }]}>
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Form.Item style={{ textAlign: 'right' }}>
             <Space>
               <Button onClick={() => setModalVisible(false)}>Cancelar</Button>
               <Button type="primary" htmlType="submit">
