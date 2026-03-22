@@ -107,14 +107,12 @@ const DashboardPage: React.FC = () => {
         </Col>
 
         <Col xs={24} lg={12}>
-          <Card title="Actividad Reciente" style={{ height: '100%' }}>
-            <ul style={{ paddingLeft: 20 }}>
-              <li>Nuevo paciente registrado: Juan Pérez</li>
-              <li>Receta dispensada: Maria García</li>
-              <li>Ingreso de lote: Amoxicilina 500mg</li>
-              <li>Ajuste de stock: Ibuprofeno 400mg</li>
-              <li>SÓLO A MODO DE EJEMPLO. AÚN NO ACTUALIZA</li>
-            </ul>
+          <Card title="Mapa del Barrio" style={{ height: '100%' }}>
+            <img
+              src="/assets/san-lorenzo.PNG"
+              alt="Mapa del Barrio"
+              style={{ width: '100%', height: 'auto', maxHeight: '300px', objectFit: 'contain' }}
+            />
           </Card>
         </Col>
       </Row>
