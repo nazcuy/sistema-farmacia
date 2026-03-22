@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import { authApi } from "../../../servicios/api";
+import { useAuth } from "../../../contextos/AuthContext";
 
 type UsuarioAdmin = {
     id: number;
@@ -30,6 +31,8 @@ const roleOptions = [
 ];
 
 const AdministracionPage: React.FC = () => {
+    const { user } = useAuth();
+
     const [usuarios, setUsuarios] = useState<UsuarioAdmin[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -37,6 +40,16 @@ const AdministracionPage: React.FC = () => {
         null,
     );
     const [form] = Form.useForm();
+
+    // Verificar permisos
+    if (user?.rol !== 'ADMINISTRADOR') {
+        return (
+            <div style={{ textAlign: 'center', marginTop: 50 }}>
+                <h2>No tienes permisos para acceder a esta página.</h2>
+                <p>Solo los administradores pueden gestionar usuarios.</p>
+            </div>
+        );
+    }
 
     const cargarUsuarios = async () => {
         setLoading(true);

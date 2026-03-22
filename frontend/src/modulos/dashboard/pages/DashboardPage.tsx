@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card, Row, Col, Statistic, Typography } from 'antd'
 import {
   UserOutlined,
@@ -8,10 +8,34 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
 } from '@ant-design/icons'
+import { pacientesApi, medicamentosApi, recetasApi } from '../../../servicios/api'
 
 const { Title } = Typography
 
 const DashboardPage: React.FC = () => {
+  const [pacientesCount, setPacientesCount] = useState(0)
+  const [medicamentosCount, setMedicamentosCount] = useState(0)
+  const [recetasPendientesCount, setRecetasPendientesCount] = useState(0)
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const pacientes = await pacientesApi.getAll()
+        setPacientesCount(pacientes.length)
+
+        const medicamentos = await medicamentosApi.getAll()
+        setMedicamentosCount(medicamentos.length)
+
+        const recetas = await recetasApi.getAll()
+        const pendientes = recetas.filter((receta: any) => receta.estado === 'PENDIENTE')
+        setRecetasPendientesCount(pendientes.length)
+      } catch (error) {
+        console.error('Error loading dashboard data', error)
+      }
+    }
+    loadData()
+  }, [])
+
   return (
     <div>
       <Title level={2}>Estado de Situación</Title>
@@ -22,7 +46,7 @@ const DashboardPage: React.FC = () => {
           <Card>
             <Statistic
               title="Pacientes Registrados"
-              value={1250}
+              value={pacientesCount}
               prefix={<UserOutlined />}
               valueStyle={{ color: '#1890ff' }}
             />
@@ -33,7 +57,7 @@ const DashboardPage: React.FC = () => {
           <Card>
             <Statistic
               title="Medicamentos en Stock"
-              value={458}
+              value={medicamentosCount}
               prefix={<MedicineBoxOutlined />}
               valueStyle={{ color: '#52c41a' }}
             />
@@ -44,7 +68,7 @@ const DashboardPage: React.FC = () => {
           <Card>
             <Statistic
               title="Recetas Pendientes"
-              value={23}
+              value={recetasPendientesCount}
               prefix={<FileTextOutlined />}
               valueStyle={{ color: '#faad14' }}
             />
