@@ -9,6 +9,7 @@ import InventarioPage from '../modulos/inventario/pages/InventarioPage'
 import HistoriaClinicaPage from '../modulos/historia_clinica/pages/HistoriaClinicaPage'
 import RecetasPage from '../modulos/dispensacion/pages/RecetasPage'
 import DispensacionPage from '../modulos/dispensacion/pages/DispensacionPage'
+import AdministracionPage from '../modulos/administracion/pages/AdministracionPage'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -101,7 +102,7 @@ const AppRoutes: React.FC = () => {
         path="/administracion"
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <AdministracionPage />
           </ProtectedRoute>
         }
       />

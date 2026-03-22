@@ -3,7 +3,6 @@ import { Table, Button, Space, Modal, Form, Input, Select, DatePicker, message, 
 import { PlusOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import { pacientesApi, Persona } from '../../../servicios/api'
 import dayjs from 'dayjs';
-const { Option } = Select
 
 const PacientesPage: React.FC = () => {
   const [data, setData] = useState<Persona[]>([])
@@ -188,12 +187,14 @@ const PacientesPage: React.FC = () => {
                 label="Tipo Documento"
                 rules={[{ required: true, message: 'Seleccione el tipo' }]}
               >
-                <Select>
-                  <Option value="DNI">DNI</Option>
-                  <Option value="LE">Libreta de Enrolamiento</Option>
-                  <Option value="LC">Libreta Cívica</Option>
-                  <Option value="PASAPORTE">Pasaporte</Option>
-                </Select>
+                <Select
+                  options={[
+                    { value: 'DNI', label: 'DNI' },
+                    { value: 'LE', label: 'Libreta de Enrolamiento' },
+                    { value: 'LC', label: 'Libreta Cívica' },
+                    { value: 'PASAPORTE', label: 'Pasaporte' },
+                  ]}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -221,11 +222,13 @@ const PacientesPage: React.FC = () => {
                 name="sexo"
                 label="Sexo"
               >
-                <Select>
-                  <Option value="M">Masculino</Option>
-                  <Option value="F">Femenino</Option>
-                  <Option value="O">Otro</Option>
-                </Select>
+                <Select
+                  options={[
+                    { value: 'M', label: 'Masculino' },
+                    { value: 'F', label: 'Femenino' },
+                    { value: 'O', label: 'Otro' },
+                  ]}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -285,12 +288,18 @@ const PacientesPage: React.FC = () => {
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="tipoDomicilio" label="Tipo" initialValue="CASA">
-                <Select>
-                  <Option value="CASA">Casa</Option>
-                  <Option value="TRABAJO">Trabajo</Option>
-                  <Option value="OTRO">Otro</Option>
-                </Select>
+              <Form.Item
+                name="tipoDomicilio"
+                label="Tipo"
+                initialValue="CASA"
+              >
+                <Select
+                  options={[
+                    { value: 'CASA', label: 'Casa' },
+                    { value: 'TRABAJO', label: 'Trabajo' },
+                    { value: 'OTRO', label: 'Otro' },
+                  ]}
+                />
               </Form.Item>
             </Col>
           </Row>

@@ -127,8 +127,16 @@ export const authApi = {
     const response = await api.post('/auth/login', { email, password })
     return response.data
   },
-  registro: async (userData: { email: string; password: string; rol: string; persona: Partial<Persona> }) => {
-    const response = await api.post('/auth/registro', userData)
+  registro: async (userData: { email: string; password: string; rol: string; nombre: string; apellido: string }) => {
+    const response = await api.post('/auth/register', userData)
+    return response.data
+  },
+  getUsuarios: async () => {
+    const response = await api.get('/auth/users')
+    return response.data
+  },
+  actualizarUsuario: async (id: number, userData: { nombre: string; apellido: string; rol: string; activo: boolean }) => {
+    const response = await api.put(`/auth/users/${id}`, userData)
     return response.data
   },
 }

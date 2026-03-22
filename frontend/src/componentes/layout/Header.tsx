@@ -41,12 +41,18 @@ const HeaderComponent: React.FC = () => {
     },
   ]
 
+  const displayName = user
+    ? user.nombre || user.apellido
+      ? `${user.nombre || ''} ${user.apellido || ''}`.trim()
+      : user.username || user.email
+    : 'Usuario'
+
   return (
     <AntHeader style={{ padding: '0 24px', background: colorBgContainer, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
       <Dropdown menu={{ items }} placement="bottomRight">
         <Space style={{ cursor: 'pointer' }}>
           <Avatar icon={<UserOutlined />} style={{ backgroundColor: '#1890ff' }} />
-          <span>{user?.username || 'Usuario'}</span>
+          <span>{displayName}</span>
         </Space>
       </Dropdown>
     </AntHeader>

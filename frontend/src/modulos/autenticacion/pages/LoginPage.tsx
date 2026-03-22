@@ -22,7 +22,8 @@ const LoginPage: React.FC = () => {
     setLoading(true)
     try {
       const data = await authApi.login(values.username, values.password)
-      const { token, ...user } = data
+      const { token, user: responseUser, ...rest } = data
+      const user = responseUser || rest
       login(user as AuthUser, token)
       message.success('Bienvenido al Sistema de Farmacia')
       navigate('/dashboard')
@@ -49,13 +50,13 @@ const LoginPage: React.FC = () => {
       >
         <div style={{ textAlign: 'center' }}>
           <img
-            src="../../../../dist/assets/logo_inicio.png"
-            alt="Logo Farmacia"
+            src="../../../../public/assets/logo_inicio.jpg"
+            alt="Logo PG"
             style={{ width: 250, marginBottom: 12, display: 'block', margin: '0 auto 0px' }}
           />
         </div>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <Title level={2} style={{ fontSize: 35, marginBottom: 15, color: '#407FB5' }}>
+          <Title level={2} style={{ fontSize: 35, marginBottom: 15, marginTop: 20, color: '#407FB5' }}>
             Sistema Integral de Salud Cooperativa
           </Title>
           <Text type="secondary">¡Al gran pueblo argentino, salud!</Text>

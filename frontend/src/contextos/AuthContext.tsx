@@ -4,6 +4,9 @@ export interface AuthUser {
   id: number
   email: string
   rol: string
+  username?: string
+  nombre?: string
+  apellido?: string
 }
 
 interface AuthContextType {
@@ -58,7 +61,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 export const useAuth = () => {
   const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    console.warn('useAuth used outside AuthProvider, providing fallback non-authenticated context')
+    return {
+      isAuthenticated: false,
+      user: null,
+      token: null,
+      login: () => {},
+      logout: () => {},
+    }
   }
   return context
 }

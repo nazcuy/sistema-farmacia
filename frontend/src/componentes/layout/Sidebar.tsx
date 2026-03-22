@@ -73,21 +73,12 @@ const Sidebar: React.FC = () => {
       breakpoint="lg"
       collapsedWidth="80"
     >
-      <div
-        style={{
-          height: 64,
-          margin: 16,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#1890ff',
-          borderRadius: 8,
-          color: '#fff',
-          fontWeight: 'bold',
-          fontSize: collapsed ? 14 : 18,
-        }}
-      >
-        {collapsed ? 'FS' : 'Farmacia Salud'}
+      <div>
+        <img
+          src="../../../public/assets/logo.png"
+          alt="Logo Carrica"
+          style={{ width: 250, margin: '16px auto', display: 'block' }}
+        />
       </div>
       <Menu
         theme="light"
